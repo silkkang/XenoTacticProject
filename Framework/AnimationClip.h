@@ -25,5 +25,14 @@ struct AnimationClip
 	std::vector<AnimationFrame> frames;
 
 	bool loadFromFile(const std::string& filePath);
+
+	void setId(const std::string& newId) { id = newId; }
+	void setFps(int newFps) { fps = newFps; }
+	void setLoopType(AnimationLoopTypes lt) { loopType = lt; }
+	void addFrame(const std::string& texId,
+		const sf::IntRect& rect)
+	{
+		frames.emplace_back(texId, rect);
+	}
 };
 

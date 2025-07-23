@@ -4,6 +4,7 @@
 #include "ResourceMgr.h"
 #include <SFML/Graphics.hpp>
 #include <algorithm>
+#include "Monster.h"
 
 SceneRound1::SceneRound1()
 	: Scene(SceneIds::Round1)
@@ -16,7 +17,8 @@ void SceneRound1::Init()
 	
 	std::vector<std::string> texList = {
 		"map/gameui.png",
-		"map/gameround1.png"
+		"map/gameround1.png",
+		"graphics/monster.png"
 	};
 	TEXTURE_MGR.Load(texList);
 
@@ -49,10 +51,19 @@ void SceneRound1::Update(float dt)
 
 	//if (tileMap)
 	//	tileMap->Update(dt);
+
+
 }
 
 void SceneRound1::Draw(sf::RenderWindow& window)
 {
+	/*sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+	sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+	std::cout << "Mouse Pixel: ("
+		<< pixelPos.x << ", " << pixelPos.y << ")  "
+		<< "World Pos: ("
+		<< worldPos.x << ", " << worldPos.y << ")"
+		<< std::endl;*/
 	Scene::Draw(window);
 	//if (tileMap)
 	//	tileMap->Draw(window);
@@ -63,4 +74,34 @@ void SceneRound1::Release()
 {
 
 	Scene::Release();
+}
+
+void SceneRound1::MonsterSpawn(int count)
+{
+	for (int i=0; i<count;++i)
+	{
+		Monster* monster = nullptr;
+		if (monsterPool.empty())
+		{
+			monster = (Monster*)AddGameObject(new Monster());
+			monster->Init();
+		}
+		else
+		{
+			monster = monsterPool.front();
+			monsterPool.pop_back();
+			monster->SetActive(true);
+		}
+
+		monster->SetType((Monster::Types)Utils::RandomRange(0, Monster::TotalTypes));
+		sf::Vector2f spawnPos;
+		spawnPos.x = Utils::RandomRange(-20, -10);
+		spawnPos.y = Utils::RandomRange(200, 310);
+		monster->SetPosition(spawnPos);
+		monster->Reset();	
+
+
+		monsterList.push_back(monster);
+	}
+	
 }

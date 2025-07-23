@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 class TileMap;
+class Monster;
 
 class SceneRound1 : public Scene
 {
@@ -13,6 +14,9 @@ protected:
 
 	sf::Sprite uiSprite;
 	sf::Sprite BackgroundSprite;
+
+	std::list<Monster*> monsterList;
+	std::list<Monster*> monsterPool;
 public:
 	
 
@@ -25,5 +29,6 @@ public:
 	void Update(float dt) override;
 	void Draw(sf::RenderWindow& window) override;
 	void Release() override;
+	void MonsterSpawn(int count);
 };
 
