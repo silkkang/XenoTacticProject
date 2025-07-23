@@ -2,11 +2,12 @@
 #include "SceneMgr.h"
 #include "SceneDev1.h"
 #include "SceneDev2.h"
-
+#include "SceneRound1.h"
 void SceneMgr::Init()
 {
 	scenes.push_back(new SceneDev1());
 	scenes.push_back(new SceneDev2());
+	scenes.push_back(new SceneRound1());
 
 	for (auto scene : scenes)
 	{

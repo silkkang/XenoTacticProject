@@ -1,6 +1,6 @@
 #pragma once
-
-class GameObject
+#include <SFML/Graphics.hpp>
+class GameObject:public sf::Transformable
 {
 protected:
 	std::string name;
