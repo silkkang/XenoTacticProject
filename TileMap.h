@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
+
 class TileMap : public GameObject
 {
 protected:
@@ -16,6 +17,8 @@ protected:
     int mapWidth = 0;
     int mapHeight = 0;
 
+    std::vector<sf::Sprite> tiles;
+
 public:
     TileMap(const std::string& name = "");
     ~TileMap() override = default;
@@ -27,4 +30,7 @@ public:
     void Draw(sf::RenderWindow& window) override;
 
     bool Load(const std::string& mapFile, const std::string& tilesetFile, int firstGid = 1);
+
+    void setScale(float x, float y);
+
 };

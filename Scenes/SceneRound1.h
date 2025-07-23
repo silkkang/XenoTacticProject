@@ -1,6 +1,8 @@
 #pragma once
 #include "Scene.h"
 #include "TileMap.h"
+#include "ResourceMgr.h" 
+#include <SFML/Graphics.hpp>
 
 class TileMap;
 
@@ -9,6 +11,8 @@ class SceneRound1 : public Scene
 protected:
 	TileMap* tileMap = nullptr;
 
+	sf::Sprite uiSprite;
+	sf::Sprite BackgroundSprite;
 public:
 	
 

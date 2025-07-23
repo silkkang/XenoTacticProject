@@ -1,8 +1,14 @@
 #include "stdafx.h"
+#include <filesystem>
+#include <iostream>
+
+namespace fs = std::filesystem;
 
 int main()
 {
-    FRAMEWORK.Init(1280, 720, "TITLE!!");
+    std::cout << "현재 작업 디렉토리: " << fs::current_path() << std::endl;
+    FRAMEWORK.Init(673 , 503, "TITLE!!");
+    //FRAMEWORK.Init(1346, 1006, "TITLE!!");
     FRAMEWORK.Do();
     FRAMEWORK.Release();
 
