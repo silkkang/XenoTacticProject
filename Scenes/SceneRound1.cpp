@@ -18,17 +18,14 @@ void SceneRound1::Init()
 	std::vector<std::string> texList = {
 		"map/gameui.png",
 		"map/gameround1.png",
-		"graphics/monster.png"
 	};
 	TEXTURE_MGR.Load(texList);
 
-	Scene::Init();
+	TEXTURE_MGR.Load("graphics/monster.png");
 
-	/*float mapScale = 1.f;
-	tileMap = new TileMap("tileMap");
-	tileMap->Load("map/untitled.tmx", "map/round1total.png");
-	tileMap->Init();
-	tileMap->setScale(mapScale, mapScale)*/;	
+	ANI_CLIP_MGR.Load("animations/monsterCol1.csv");
+
+	Scene::Init();
 
 	sf::Texture& uiTex = TEXTURE_MGR.Get("map/gameui.png");
 	uiSprite.setTexture(uiTex);
@@ -37,6 +34,9 @@ void SceneRound1::Init()
 	sf::Texture& BackTex = TEXTURE_MGR.Get("map/gameround1.png");
 	BackgroundSprite.setTexture(BackTex);
 	BackgroundSprite.setScale(1.5f, 2.f);
+	bool ok = ANI_CLIP_MGR.Load("animations/monsterCol1.csv");
+	std::cout << "Load returned: " << ok << "\n";
+
 }
 
 void SceneRound1::Enter()
@@ -48,7 +48,12 @@ void SceneRound1::Enter()
 void SceneRound1::Update(float dt)
 {
 	Scene::Update(dt);
-
+	monsterTimer += dt;
+	if (monsterTimer > 1.0f)
+	{
+		MonsterSpawn(1);
+		monsterTimer = 0.0f;
+	}
 	//if (tileMap)
 	//	tileMap->Update(dt);
 
@@ -65,8 +70,6 @@ void SceneRound1::Draw(sf::RenderWindow& window)
 		<< worldPos.x << ", " << worldPos.y << ")"
 		<< std::endl;*/
 	Scene::Draw(window);
-	//if (tileMap)
-	//	tileMap->Draw(window);
 	window.draw(BackgroundSprite);
 	window.draw(uiSprite);
 }
@@ -93,7 +96,6 @@ void SceneRound1::MonsterSpawn(int count)
 			monster->SetActive(true);
 		}
 
-		monster->SetType((Monster::Types)Utils::RandomRange(0, Monster::TotalTypes));
 		sf::Vector2f spawnPos;
 		spawnPos.x = Utils::RandomRange(-20, -10);
 		spawnPos.y = Utils::RandomRange(200, 310);

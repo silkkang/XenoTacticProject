@@ -15,8 +15,10 @@ protected:
 	sf::Sprite uiSprite;
 	sf::Sprite BackgroundSprite;
 
-	std::list<Monster*> monsterList;
-	std::list<Monster*> monsterPool;
+	std::vector<Monster*> monsterList;
+	std::vector<Monster*> monsterPool;
+
+	float monsterTimer = 0;
 public:
 	
 
