@@ -42,16 +42,12 @@ void Monster::SetOrigin(Origins preset)
 
 void Monster::Init()
 {
-	sortingLayer = SortingLayers::Foreground;
-	sortingOrder = 0;
-	std::string clipId = "monsterCol1";
 	
+	body.setTexture(TEXTURE_MGR.Get("graphics/monster.png"));
+	Utils::SetOrigin(body, Origins::BC);
 
-	sprite.setTexture(TEXTURE_MGR.Get("graphics/monster.png"));
-
-	animator.SetTarget(&sprite);
-	animator.Play(clipId);
-
+	animator.SetTarget(&body);
+	
 }
 
 void Monster::Release()
@@ -60,20 +56,29 @@ void Monster::Release()
 
 void Monster::Reset()
 {
+	sortingLayer = SortingLayers::Foreground;
+	sortingOrder = 0;
 	hp = maxHp;
+	
+	animator.Play("animations/monsterCol1.csv");
+	SetOrigin(Origins::BC);
 
-
-	animator.Play("monsterCol1");
 }
 
 void Monster::Update(float dt)
 {
+	
+
+	position.x += speed * dt;
+	body.setPosition(position);
 
 	animator.Update(dt);
+
+	
 }
 
 void Monster::Draw(sf::RenderWindow& window)
 {
-	window.draw(sprite);
+	window.draw(body);
 }
 

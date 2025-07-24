@@ -8,13 +8,13 @@ class Monster : public GameObject
 {
 protected:
 	sf::Sprite body;
+	Animator animator;
 
 	int maxHp = 0;
-	int speed = 0;
+	int speed = 100;
 	int damage = 1;
 	int hp;
 
-	Animator animator;
 	std::string texId;
 	int cols = 1;
 	int rows = 1;

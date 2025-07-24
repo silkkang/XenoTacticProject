@@ -10,7 +10,7 @@ SceneDev2::SceneDev2() : Scene(SceneIds::Dev2)
 void SceneDev2::Init()
 {
 	texIds.push_back("graphics/sprite_sheet.png");
-	texIds.push_back("graphics/monster.png");
+	
 	fontIds.push_back("fonts/DS-DIGIT.ttf");
 
 	ANI_CLIP_MGR.Load("animations/idle.csv");
