@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <algorithm>
 #include "Monster.h"
+#include "TowerBase.h"
 
 SceneRound1::SceneRound1()
 	: Scene(SceneIds::Round1)
@@ -14,11 +15,12 @@ SceneRound1::SceneRound1()
 
 void SceneRound1::Init()
 {
-	texIds.push_back("graphics/monster.png");
 
 	std::vector<std::string> texList = {
 		"map/gameui.png",
 		"map/gameround1.png",
+		"graphics/pickimage.png",
+		 "graphics/towerbase.png",
 	};
 	TEXTURE_MGR.Load(texList);
 	TEXTURE_MGR.Load("graphics/monster.png");
@@ -35,6 +37,14 @@ void SceneRound1::Init()
 	BackgroundSprite.setTexture(BackTex);
 	BackgroundSprite.setScale(1.5f, 2.f);
 
+	sf::Texture& PickImgae = TEXTURE_MGR.Get("graphics/pickimage.png");
+	PickImageSprite.setTexture(PickImgae);
+	Utils::SetOrigin(PickImageSprite, Origins::MC);
+	PickImageSprite.setColor(sf::Color(255, 255, 255, 128));
+
+	/*sf::Texture& PickImgaex = TEXTURE_MGR.Get("graphics/pickimagex.png.png");
+	PickImagexSprite.setTexture(PickImgaex);
+	Utils::SetOrigin(PickImagexSprite, Origins::MC);*/
 }
 
 void SceneRound1::Enter()
@@ -54,6 +64,7 @@ void SceneRound1::Update(float dt)
 		monsterTimer = 0.0f;
 	}
 
+
 	//if (tileMap)
 	//	tileMap->Update(dt);
 
@@ -62,17 +73,65 @@ void SceneRound1::Update(float dt)
 
 void SceneRound1::Draw(sf::RenderWindow& window)
 {
-	//sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-	//sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
-	//std::cout << "Mouse Pixel: ("
-	//	<< pixelPos.x << ", " << pixelPos.y << ")  "
-	//	<< "World Pos: ("
-	//	<< worldPos.x << ", " << worldPos.y << ")"
-	//	<< std::endl;
+	/*sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+	sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+	std::cout << "Mouse Pixel: ("
+		<< pixelPos.x << ", " << pixelPos.y << ")  "
+		<< "World Pos: ("
+		<< worldPos.x << ", " << worldPos.y << ")"
+		<< std::endl;*/
+
+
 
 	window.draw(BackgroundSprite);
 	Scene::Draw(window);
 	window.draw(uiSprite);
+
+
+	sf::Vector2i mousePx = sf::Mouse::getPosition(window);
+	sf::Vector2f worldPos = window.mapPixelToCoords(mousePx);
+
+	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
+	{
+
+		if (worldPos.x > 740.f && worldPos.x < 800.f &&
+			worldPos.y > 75.f && worldPos.y < 155.f)
+		{
+			std::cout << "Click to tower 1" << std::endl;
+			
+			isPlacingWall = true;
+			
+		}
+	}
+	if (isPlacingWall)
+	{
+	
+		if (worldPos.x > 23.f && worldPos.x < 670.f &&
+			worldPos.y > 320.f && worldPos.y < 690.f)
+		{
+			PickImageSprite.setPosition(worldPos);
+			PickImageSprite.setScale(2.7f, 3.6f);
+			if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
+			{
+				auto pos = PickImageSprite.getPosition();
+				isPlacingWall = false;
+				auto* Tower = new TowerBase("Base");
+				Tower->Init();
+				Tower->SetPosition(pos);
+				Tower->Reset();
+				AddGameObject(Tower);
+				
+			}
+			window.draw(PickImageSprite);
+
+		}
+
+		
+	}
+
+
+
+
 
 }
 void SceneRound1::Release()
@@ -83,7 +142,7 @@ void SceneRound1::Release()
 
 void SceneRound1::MonsterSpawn(int count)
 {
-	for (int i=0; i<count;++i)
+	for (int i = 0; i < count; ++i)
 	{
 		Monster* monster = nullptr;
 		if (monsterPool.empty())
@@ -102,13 +161,13 @@ void SceneRound1::MonsterSpawn(int count)
 		spawnPos.x = Utils::RandomRange(-20, -10);
 		spawnPos.y = Utils::RandomRange(400, 630);
 		monster->SetPosition(spawnPos);
-		monster->Reset();	
-		
+		monster->Reset();
+
 		float xx = 710.f;
 		float yy = Utils::RandomRange(400, 630);
 		monster->SetArrivePos({ xx,yy });
 		monster->Reset();
 		monsterList.push_back(monster);
 	}
-	
+
 }

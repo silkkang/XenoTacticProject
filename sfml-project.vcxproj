@@ -165,6 +165,7 @@
     <ClCompile Include="Framework\Utils.cpp" />
     <ClCompile Include="Framework\Variables.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="TowerBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\AnimationClip.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="Framework\Utils.h" />
     <ClInclude Include="Framework\Variables.h" />
     <ClInclude Include="TileMap.h" />
+    <ClInclude Include="TowerBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

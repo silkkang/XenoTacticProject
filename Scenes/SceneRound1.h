@@ -6,7 +6,7 @@
 
 class TileMap;
 class Monster;
-
+class TowerBase;
 class SceneRound1 : public Scene
 {
 protected:
@@ -14,11 +14,16 @@ protected:
 
 	sf::Sprite uiSprite;
 	sf::Sprite BackgroundSprite;
-
+	sf::Sprite PickImageSprite;
+	sf::Sprite PickImagexSprite;
 	std::vector<Monster*> monsterList;
 	std::vector<Monster*> monsterPool;
 
 	float monsterTimer = 0;
+
+
+	bool isPlacingWall = false;
+	sf::Sprite wallSprite;
 public:
 	
 
