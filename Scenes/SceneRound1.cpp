@@ -49,7 +49,6 @@ void SceneRound1::Update(float dt)
 	monsterTimer += dt;
 	if (monsterTimer > 1.0f)
 	{
-
 		std::cout << "Monster Spawn" << std::endl;
 		MonsterSpawn(1);
 		monsterTimer = 0.0f;
@@ -63,19 +62,18 @@ void SceneRound1::Update(float dt)
 
 void SceneRound1::Draw(sf::RenderWindow& window)
 {
-	/*sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-	sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
-	std::cout << "Mouse Pixel: ("
-		<< pixelPos.x << ", " << pixelPos.y << ")  "
-		<< "World Pos: ("
-		<< worldPos.x << ", " << worldPos.y << ")"
-		<< std::endl;*/
-	Scene::Draw(window);
-	window.draw(BackgroundSprite);
+	//sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+	//sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+	//std::cout << "Mouse Pixel: ("
+	//	<< pixelPos.x << ", " << pixelPos.y << ")  "
+	//	<< "World Pos: ("
+	//	<< worldPos.x << ", " << worldPos.y << ")"
+	//	<< std::endl;
 
-	for (auto monster : monsterList)
-		 monster->Draw(window);
+	window.draw(BackgroundSprite);
+	Scene::Draw(window);
 	window.draw(uiSprite);
+
 }
 void SceneRound1::Release()
 {
@@ -100,14 +98,16 @@ void SceneRound1::MonsterSpawn(int count)
 			monster->SetActive(true);
 			monster->Init();
 		}
-
 		sf::Vector2f spawnPos;
 		spawnPos.x = Utils::RandomRange(-20, -10);
-		spawnPos.y = Utils::RandomRange(390, 630);
+		spawnPos.y = Utils::RandomRange(400, 630);
 		monster->SetPosition(spawnPos);
 		monster->Reset();	
-
-
+		
+		float xx = 710.f;
+		float yy = Utils::RandomRange(400, 630);
+		monster->SetArrivePos({ xx,yy });
+		monster->Reset();
 		monsterList.push_back(monster);
 	}
 	

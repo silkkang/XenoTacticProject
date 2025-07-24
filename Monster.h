@@ -10,7 +10,7 @@ protected:
 	sf::Sprite body;
 	Animator animator;
 
-	int maxHp = 0;
+	int maxHp = 100;
 	int speed = 100;
 	int damage = 1;
 	int hp;
@@ -21,6 +21,8 @@ protected:
 	float frameDuration = 0.1f;
 	sf::Sprite sprite;
 
+	sf::Vector2f arrivePos{ 0.f,0.f };
+	bool isArrive = false;
 public:
 	Monster(const std::string& name = "");
 	virtual ~Monster() = default;
@@ -30,6 +32,8 @@ public:
 	void SetScale(const sf::Vector2f& s) override;
 	void SetOrigin(const sf::Vector2f& o) override;
 	void SetOrigin(Origins preset) override;
+
+	void SetArrivePos(const sf::Vector2f& pos);
 
 	void Init() override;
 	void Release() override;

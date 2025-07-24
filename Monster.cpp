@@ -40,6 +40,12 @@ void Monster::SetOrigin(Origins preset)
 	}
 }
 
+void Monster::SetArrivePos(const sf::Vector2f& pos)
+{
+	arrivePos = pos;
+	isArrive = true;
+}
+
 void Monster::Init()
 {
 	
@@ -67,10 +73,32 @@ void Monster::Reset()
 
 void Monster::Update(float dt)
 {
-	
+	if (isArrive)
+	{
+		sf::Vector2f nowpos = GetPosition();
+		sf::Vector2f delta = arrivePos - nowpos;
+		float distance = std::sqrt(delta.x * delta.x + delta.y * delta.y);
 
-	position.x += speed * dt;
-	body.setPosition(position);
+
+		if (distance < 20)
+		{
+			body.setPosition(arrivePos);
+			isArrive = false;
+			SetActive(false);
+		}
+		else
+		{
+			sf::Vector2f direction = { delta.x / distance, delta.y / distance };
+			float moveStep = speed * dt;
+			sf::Vector2f offset = direction * moveStep;
+			sf::Vector2f nextPos = nowpos + offset;
+			SetPosition(nextPos);
+
+			float angleRad = std::atan2(direction.y, direction.x);
+			float angleDeg = angleRad * 180.f / 3.14159265f;
+			body.setRotation(angleDeg);
+		}
+	}
 
 	animator.Update(dt);
 
