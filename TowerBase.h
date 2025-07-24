@@ -1,10 +1,13 @@
 #pragma once
 #include "GameObject.h"
+#include "HitBox.h"
+
 class TowerBase :
     public GameObject
 {
 protected:
 	sf::Sprite body;
+	HitBox hitBox;
 	std::string texId;
 public:
 	TowerBase(const std::string& name = "");
@@ -22,5 +25,14 @@ public:
 	void Update(float dt) override;
 	void Draw(sf::RenderWindow& window) override;
 
+	sf::FloatRect GetLocalBounds() const override
+	{
+		return body.getLocalBounds();
+	}
+
+	sf::FloatRect GetGlobalBounds() const override
+	{
+		return body.getGlobalBounds();
+	}
 };
 

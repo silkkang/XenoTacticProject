@@ -1,3 +1,4 @@
+#define DEF_DEV
 #pragma once
 
 // STL

@@ -43,6 +43,8 @@ void Framework::Do()
         if (InputMgr::GetKeyDown(sf::Keyboard::F10))
         {
             Variables::isDrawHitBox = !Variables::isDrawHitBox;
+            std::cout << "HitBox "
+                << (Variables::isDrawHitBox ? "ON\n" : "OFF\n");
         }
 #endif
 

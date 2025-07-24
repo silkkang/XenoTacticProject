@@ -101,6 +101,7 @@ void Monster::Update(float dt)
 	}
 
 	animator.Update(dt);
+	hitBox.UpdateTransform(body, GetLocalBounds());
 
 	
 }
@@ -108,5 +109,7 @@ void Monster::Update(float dt)
 void Monster::Draw(sf::RenderWindow& window)
 {
 	window.draw(body);
+	hitBox.Draw(window);
+
 }
 

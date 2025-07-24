@@ -60,11 +60,12 @@ void TowerBase::Reset()
 
 void TowerBase::Update(float dt)
 {
-
+	hitBox.UpdateTransform(body, GetLocalBounds());
 }
 
 void TowerBase::Draw(sf::RenderWindow& window)
 { 
 	//std::cout << "ÀÌ¹ÌÁö" << std::endl;
 	window.draw(body);
+	hitBox.Draw(window);
 }
