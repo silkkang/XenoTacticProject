@@ -1,5 +1,5 @@
 #pragma once
-
+#include "GameObject.h"
 class Scene
 {
 protected:
@@ -33,8 +33,7 @@ public:
 	virtual void Draw(sf::RenderWindow& window);
 
 
-	virtual void OnEvent(const sf::Event& ev)
-	{ }
+	virtual void OnEvent(const sf::Event& ev);
 	
 	GameObject* AddGameObject(GameObject* go);
 	void RemoveGameObject(GameObject* go);

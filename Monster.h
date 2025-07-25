@@ -4,6 +4,9 @@
 #include "Animator.h"
 #include <SFML/Graphics.hpp>
 #include "HitBox.h"	
+
+class Scene;
+
 class Monster : public GameObject
 {
 protected:
@@ -22,10 +25,11 @@ protected:
 	int rows = 1;
 	float frameDuration = 0.1f;
 	sf::Sprite sprite;
-
+	
 	sf::Vector2f arrivePos{ 0.f,0.f };
 	bool isArrive = false;
-
+	bool blocked = false;
+	Scene* scene = nullptr;
 public:
 	Monster(const std::string& name = "");
 	virtual ~Monster() = default;

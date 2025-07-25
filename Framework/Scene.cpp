@@ -93,7 +93,10 @@ void Scene::Draw(sf::RenderWindow& window)
 	}
 	ApplyPendingChanges();
 }
+void Scene::OnEvent(const sf::Event& ev)
+{
 
+}
 void Scene::ApplyPendingChanges()
 {
 	for (GameObject* go : objectsToAdd)

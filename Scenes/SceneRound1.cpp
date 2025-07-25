@@ -6,7 +6,8 @@
 #include <algorithm>
 #include "Monster.h"
 #include "TowerBase.h"
-
+#include "Grid.h"
+#include <array>
 SceneRound1::SceneRound1(sf::RenderWindow& window)
 	: Scene(SceneIds::Round1), m_window(window), mgrid({ 24.f,32.f }, { 30,15 })
 {
@@ -105,13 +106,17 @@ void SceneRound1::Draw(sf::RenderWindow& window)
 		sf::Vector2f snapped = mgrid.snapPosition(world);
 		PickImageSprite.setPosition(snapped);
 		PickImagexSprite.setPosition(snapped);
-		if (isColliding)
+		if (world.x > 23.f && world.x < 670.f &&
+			world.y > 320.f && world.y < 690.f)
 		{
-			window.draw(PickImagexSprite);
-		}
-		if (!isColliding)
-		{
-			window.draw(PickImageSprite);
+			if (isColliding)
+			{
+				window.draw(PickImagexSprite);
+			}
+			if (!isColliding)
+			{
+				window.draw(PickImageSprite);
+			}
 		}
 	}
 }
@@ -177,15 +182,13 @@ void SceneRound1::OnEvent(const sf::Event& ev)
 
 		if (tower->GetGlobalBounds().intersects(pickBounds))
 		{
-			std::cout << "°ãÄ§" << std::endl;
+			//std::cout << "°ãÄ§" << std::endl;
 			towerColliding = true;
-			//m_window.draw(PickImagexSprite);
 			break;
 		}
 		else
 		{
-			std::cout << "¾È°ãÄ§" << std::endl;
-			//m_window.draw(PickImageSprite);
+			//std::cout << "¾È°ãÄ§" << std::endl;
 			towerColliding = false;
 		}
 	}
@@ -193,49 +196,56 @@ void SceneRound1::OnEvent(const sf::Event& ev)
 	{
 		if (mo->GetGlobalBounds().intersects(pickBounds))
 		{
-			std::cout << "°ãÄ§" << std::endl;
+			//std::cout << "°ãÄ§" << std::endl;
 			monsterColliding = true;
-			//m_window.draw(PickImagexSprite);
 			break;
 		}
 		else
 		{
-			std::cout << "¾È°ãÄ§" << std::endl;
-			//m_window.draw(PickImageSprite);
+			//std::cout << "¾È°ãÄ§" << std::endl;
 			monsterColliding = false;
 		}
 	}
-	if(towerColliding || monsterColliding)
+	if (towerColliding || monsterColliding)
 	{
 		isColliding = true;
 	}
-	if(!towerColliding && !monsterColliding)
+	if (!towerColliding && !monsterColliding)
 	{
 		isColliding = false;
 	}
-	if (isPlacingWall)
+	if (isPlacingWall && !isColliding)
 	{
 		if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
 		{
 			if (world.x > 23.f && world.x < 670.f &&
 				world.y > 320.f && world.y < 690.f)
 			{
-				if (!isColliding)
+				int cx = int(std::round(world.x / mgrid.getCellSize().x));
+				int cy = int(std::round(world.y / mgrid.getCellSize().y));
+				std::array<std::pair<int, int>, 4> quads = { {
+					{cx - 1, cy - 1},
+					{cx , cy - 1},
+					{cx - 1, cy },
+					{cx , cy }
+				} };
+				std::cout<< cx<<", " << cy << std::endl;
+				for (auto [cx, cy] : quads)
 				{
-					std::cout << "No Collision" << std::endl;
-					auto pos = PickImageSprite.getPosition();
-					auto* Tower = new TowerBase("Base");
-					Tower->Init();
-					Tower->SetPosition(pos);
-					Tower->Reset();
-					AddGameObject(Tower);
-					towerList.push_back(Tower);
-					isPlacingWall = false;
+					if (mgrid.isInBounds(cx, cy))
+					{
+						mgrid.setBlocked(cx, cy, true);
+					}
 				}
+				auto* Tower = new TowerBase("Base");
+				Tower->Init();
+				Tower->SetPosition(snapped);
+				Tower->Reset();
+				AddGameObject(Tower);
+				towerList.push_back(Tower);
+				isPlacingWall = false;
 			}
 		}
-
 	}
-
 }
 

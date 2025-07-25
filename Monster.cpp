@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Monster.h"
 #include "AnimationClip.h"
-
+#include "SceneRound1.h"
+#include "TowerBase.h"
 Monster::Monster(const std::string& name)
 	: GameObject(name)
 {
@@ -48,12 +49,9 @@ void Monster::SetArrivePos(const sf::Vector2f& pos)
 
 void Monster::Init()
 {
-	
 	body.setTexture(TEXTURE_MGR.Get("graphics/monster.png"));
 	Utils::SetOrigin(body, Origins::BC);
-
 	animator.SetTarget(&body);
-	
 }
 
 void Monster::Release()
@@ -85,6 +83,8 @@ void Monster::Update(float dt)
 			body.setPosition(arrivePos);
 			isArrive = false;
 			SetActive(false);
+			//플레이어 hp -= 1;
+			return;
 		}
 		else
 		{
@@ -92,8 +92,9 @@ void Monster::Update(float dt)
 			float moveStep = speed * dt;
 			sf::Vector2f offset = direction * moveStep;
 			sf::Vector2f nextPos = nowpos + offset;
+	
 			SetPosition(nextPos);
-
+	
 			float angleRad = std::atan2(direction.y, direction.x);
 			float angleDeg = angleRad * 180.f / 3.14159265f;
 			body.setRotation(angleDeg);

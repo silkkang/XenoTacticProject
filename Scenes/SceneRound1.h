@@ -12,7 +12,7 @@ class SceneRound1 : public Scene
 {
 protected:
 	TileMap* tileMap = nullptr;
-
+	Grid mgrid;
 	std::vector<TowerBase*> towerList;
 
 
@@ -25,7 +25,6 @@ protected:
 
 	float monsterTimer = 0;
 	sf::RenderWindow& m_window;
-	Grid mgrid;
 	bool isPlacingWall = false;
 	sf::Sprite wallSprite;
 	bool isColliding = false;
