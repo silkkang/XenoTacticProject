@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "TileMap.h"
 #include "ResourceMgr.h" 
+#include "Grid.h"
 #include <SFML/Graphics.hpp>
 
 class TileMap;
@@ -20,14 +21,16 @@ protected:
 	std::vector<Monster*> monsterPool;
 
 	float monsterTimer = 0;
-
-
+	sf::RenderWindow& m_window;
+	Grid mgrid;
 	bool isPlacingWall = false;
 	sf::Sprite wallSprite;
+
+
 public:
 	
 
-	SceneRound1();
+	SceneRound1(sf::RenderWindow& window);
 	virtual ~SceneRound1() = default;
 
 
@@ -37,5 +40,6 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 	void Release() override;
 	void MonsterSpawn(int count);
+	void OnEvent(const sf::Event& ev) override;
 };
 

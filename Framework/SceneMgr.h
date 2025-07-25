@@ -13,8 +13,9 @@ protected:
 	SceneIds currentScene = SceneIds::None;
 	SceneIds nextScene = SceneIds::None;
 
+	sf::RenderWindow* m_window = nullptr;
 public:
-	void Init();
+	void Init(sf::RenderWindow& window);
 	void Release();
 
 	Scene* GetCurrentScene() { return scenes[(int)currentScene]; }

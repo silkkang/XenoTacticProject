@@ -3,11 +3,13 @@
 #include "SceneDev1.h"
 #include "SceneDev2.h"
 #include "SceneRound1.h"
-void SceneMgr::Init()
+void SceneMgr::Init(sf::RenderWindow& window)
 {
+	m_window = &window;
+
 	scenes.push_back(new SceneDev1());
 	scenes.push_back(new SceneDev2());
-	scenes.push_back(new SceneRound1());
+	scenes.push_back(new SceneRound1(*m_window));
 
 	for (auto scene : scenes)
 	{

@@ -12,13 +12,14 @@ void Framework::Init(int w, int h, const std::string& t)
     Utils::Init();
 	InputMgr::Init();
     SOUND_MGR.Init();
-	SCENE_MGR.Init();
+	SCENE_MGR.Init(window);
 }
 
 void Framework::Do()
 {
     while (window.isOpen())
     {
+
         sf::Time dt = clock.restart();
         realDeltaTime = deltaTime = dt.asSeconds();
         deltaTime *= timeScale;
@@ -32,6 +33,8 @@ void Framework::Do()
             if (event.type == sf::Event::Closed)
                 window.close();
             InputMgr::UpdateEvent(event);
+            if (auto cur = SCENE_MGR.GetCurrentScene())
+                cur->OnEvent(event);
         }
 
         InputMgr::Update(deltaTime);

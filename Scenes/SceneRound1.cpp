@@ -7,8 +7,8 @@
 #include "Monster.h"
 #include "TowerBase.h"
 
-SceneRound1::SceneRound1()
-	: Scene(SceneIds::Round1)
+SceneRound1::SceneRound1(sf::RenderWindow& window)
+	: Scene(SceneIds::Round1), m_window(window), mgrid({24.f,32.f}, {30,15})
 {
 }
 
@@ -73,66 +73,38 @@ void SceneRound1::Update(float dt)
 
 void SceneRound1::Draw(sf::RenderWindow& window)
 {
-	/*sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
-	sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
-	std::cout << "Mouse Pixel: ("
-		<< pixelPos.x << ", " << pixelPos.y << ")  "
-		<< "World Pos: ("
-		<< worldPos.x << ", " << worldPos.y << ")"
-		<< std::endl;*/
 
 
 
 	window.draw(BackgroundSprite);
+	float offsetY = 289.f;
+	sf::Transform t;
+	t.translate(1.f, offsetY);
+	mgrid.draw(window, t);;
 	Scene::Draw(window);
 	window.draw(uiSprite);
 
 
-	sf::Vector2i mousePx = sf::Mouse::getPosition(window);
-	sf::Vector2f worldPos = window.mapPixelToCoords(mousePx);
+sf::Vector2i mousePx = sf::Mouse::getPosition(window);
+sf::Vector2f world = window.mapPixelToCoords(mousePx);
+//std::cout << "Mouse Pixel: ("
+//	<< mousePx.x << ", " << mousePx.y << ")  "
+//	<< "World Pos: ("
+//	<< worldPos.x << ", " << worldPos.y << ")"
+//	<< std::endl;
 
-	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
+if (isPlacingWall)
+{
+	if (world.x > 23.f && world.x < 670.f &&
+		world.y > 320.f && world.y < 690.f)
 	{
+		sf::Vector2f snapped = mgrid.snapPosition(world);
 
-		if (worldPos.x > 740.f && worldPos.x < 800.f &&
-			worldPos.y > 75.f && worldPos.y < 155.f)
-		{
-			std::cout << "Click to tower 1" << std::endl;
-			
-			isPlacingWall = true;
-			
-		}
+		PickImageSprite.setPosition(snapped);
+		PickImageSprite.setScale(2.7f, 3.6f);
+		window.draw(PickImageSprite);
 	}
-	if (isPlacingWall)
-	{
-	
-		if (worldPos.x > 23.f && worldPos.x < 670.f &&
-			worldPos.y > 320.f && worldPos.y < 690.f)
-		{
-			PickImageSprite.setPosition(worldPos);
-			PickImageSprite.setScale(2.7f, 3.6f);
-			if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
-			{
-				auto pos = PickImageSprite.getPosition();
-				isPlacingWall = false;
-				auto* Tower = new TowerBase("Base");
-				Tower->Init();
-				Tower->SetPosition(pos);
-				Tower->Reset();
-				AddGameObject(Tower);
-				
-			}
-			window.draw(PickImageSprite);
-
-		}
-
-		
-	}
-
-
-
-
-
+}
 }
 void SceneRound1::Release()
 {
@@ -170,4 +142,50 @@ void SceneRound1::MonsterSpawn(int count)
 		monsterList.push_back(monster);
 	}
 
+}
+
+void SceneRound1::OnEvent(const sf::Event& ev)
+{
+	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
+	{
+		sf::Vector2i pix{ ev.mouseButton.x, ev.mouseButton.y };
+		sf::Vector2f world = m_window.mapPixelToCoords(pix);
+
+		if (world.x > 740.f && world.x < 800.f &&
+			world.y > 75.f && world.y < 155.f)
+		{
+			std::cout << "Click to tower 1" << std::endl;
+
+			isPlacingWall = true;
+		}
+		if (isPlacingWall)
+		{
+
+			if (world.x > 23.f && world.x < 670.f &&
+				world.y > 320.f && world.y < 690.f)
+			{
+				sf::Vector2f snapped = mgrid.snapPosition(world);
+
+				PickImageSprite.setPosition(snapped);
+				PickImageSprite.setScale(2.7f, 3.6f);
+				
+					if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
+					{
+						auto pos = PickImageSprite.getPosition();
+						isPlacingWall = false;
+						auto* Tower = new TowerBase("Base");
+						Tower->Init();
+						Tower->SetPosition(pos);
+						Tower->Reset();
+						AddGameObject(Tower);
+					}
+			}
+			else if (world.x < 23.f && world.x > 670.f &&
+				world.y < 320.f && world.y > 690.f)
+			{
+
+			}
+		}
+		
+	}
 }

@@ -99,11 +99,8 @@ void Monster::Update(float dt)
 			body.setRotation(angleDeg);
 		}
 	}
-
 	animator.Update(dt);
 	hitBox.UpdateTransform(body, GetLocalBounds());
-
-	
 }
 
 void Monster::Draw(sf::RenderWindow& window)
