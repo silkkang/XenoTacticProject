@@ -13,6 +13,9 @@ class SceneRound1 : public Scene
 protected:
 	TileMap* tileMap = nullptr;
 
+	std::vector<TowerBase*> towerList;
+
+
 	sf::Sprite uiSprite;
 	sf::Sprite BackgroundSprite;
 	sf::Sprite PickImageSprite;
@@ -25,7 +28,9 @@ protected:
 	Grid mgrid;
 	bool isPlacingWall = false;
 	sf::Sprite wallSprite;
-
+	bool isColliding = false;
+	bool towerColliding = false;
+	bool monsterColliding = false;
 
 public:
 	

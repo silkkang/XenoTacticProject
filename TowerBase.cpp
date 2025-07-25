@@ -45,7 +45,7 @@ void TowerBase::Init()
 	texId = "graphics/towerbase.png";
 	sf::Texture& tex = TEXTURE_MGR.Get(texId);
 	body.setTexture(tex);
-	body.setScale(1.5f, 2.f);
+	body.setScale(1.40f, 1.95f);
 	SetOrigin(Origins::MC);
 	
 }
