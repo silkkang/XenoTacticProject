@@ -9,6 +9,8 @@ protected:
 	sf::Sprite body;
 	HitBox hitBox;
 	std::string texId;
+
+	std::vector<sf::Vector2i> mOccupiedCells;
 public:
 	TowerBase(const std::string& name = "");
 	virtual ~TowerBase() = default;
@@ -33,6 +35,16 @@ public:
 	sf::FloatRect GetGlobalBounds() const override
 	{
 		return body.getGlobalBounds();
+	}
+
+	void SetOccupiedCells(const std::vector<sf::Vector2i>& cells)
+	{
+		mOccupiedCells = cells;
+	}
+
+	const std::vector<sf::Vector2i>& GetOccupiedCells() const
+	{
+		return mOccupiedCells;
 	}
 };
 

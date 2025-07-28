@@ -1,35 +1,39 @@
 #include "stdafx.h"
-#include "TowerBase.h"
-TowerBase::TowerBase(const std::string& name)
+#include "TowerWall.h"
+#include "AnimationClip.h"
+#include "SceneRound1.h"
+#include "Monster.h"
+#include <cmath>
+TowerWall::TowerWall(const std::string& name)
 	: GameObject(name)
 {
 }
 
-void TowerBase::SetPosition(const sf::Vector2f& pos)
+void TowerWall::SetPosition(const sf::Vector2f& pos)
 {
 	GameObject::SetPosition(pos);
 	body.setPosition(pos);
 }
 
-void TowerBase::SetRotation(float rot)
+void TowerWall::SetRotation(float rot)
 {
 	GameObject::SetRotation(rot);
 	body.setRotation(rot);
 }
 
-void TowerBase::SetScale(const sf::Vector2f& s)
+void TowerWall::SetScale(const sf::Vector2f& s)
 {
 	GameObject::SetScale(s);
 	body.setScale(s);
 }
 
-void TowerBase::SetOrigin(const sf::Vector2f& o)
+void TowerWall::SetOrigin(const sf::Vector2f& o)
 {
 	GameObject::SetOrigin(o);
 	body.setOrigin(o);
 }
 
-void TowerBase::SetOrigin(Origins preset)
+void TowerWall::SetOrigin(Origins preset)
 {
 	GameObject::SetOrigin(preset);
 	if (preset != Origins::Custom)
@@ -38,33 +42,34 @@ void TowerBase::SetOrigin(Origins preset)
 	}
 }
 
-void TowerBase::Init()
+void TowerWall::Init()
 {
 	sortingLayer = SortingLayers::Foreground;
 	sortingOrder = 0;
-	texId = "graphics/towerbase.png";
+	texId = "wall/1.png";
 	sf::Texture& tex = TEXTURE_MGR.Get(texId);
 	body.setTexture(tex);
 	body.setScale(1.40f, 1.95f);
 	SetOrigin(Origins::MC);
-	
+
 }
 
-void TowerBase::Release()
+void TowerWall::Release()
 {
 }
 
-void TowerBase::Reset()
+void TowerWall::Reset()
 {
 }
 
-void TowerBase::Update(float dt)
+void TowerWall::Update(float dt)
 {
+
 	hitBox.UpdateTransform(body, GetLocalBounds());
 }
 
-void TowerBase::Draw(sf::RenderWindow& window)
-{ 
+void TowerWall::Draw(sf::RenderWindow& window)
+{
 	//std::cout << "ÀÌ¹ÌÁö" << std::endl;
 	window.draw(body);
 	hitBox.Draw(window);

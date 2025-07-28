@@ -6,6 +6,9 @@
 #include <algorithm>
 #include "Monster.h"
 #include "TowerBase.h"
+#include "Tower1.h"
+#include "Tower2.h"
+#include "TowerWall.h"
 #include "Grid.h"
 #include <array>
 SceneRound1::SceneRound1(sf::RenderWindow& window)
@@ -16,19 +19,22 @@ SceneRound1::SceneRound1(sf::RenderWindow& window)
 
 void SceneRound1::Init()
 {
-
 	std::vector<std::string> texList = {
 		"map/gameui.png",
 		"map/gameround1.png",
 		"graphics/pickimage.png",
 		"graphics/towerbase.png",
 		"graphics/pickimagex.png",
+		"tower1/1.png",
+		"tower2/1.png",
+		"wall/1.png"
+
 	};
 	TEXTURE_MGR.Load(texList);
 	TEXTURE_MGR.Load("graphics/monster.png");
 	ANI_CLIP_MGR.Load("animations/monsterCol1.csv");
 
-	AddGameObject(new Monster());
+	
 	Scene::Init();
 
 	sf::Texture& uiTex = TEXTURE_MGR.Get("map/gameui.png");
@@ -76,6 +82,7 @@ void SceneRound1::Update(float dt)
 	//if (tileMap)
 	//	tileMap->Update(dt);
 
+	
 
 }
 
@@ -95,13 +102,14 @@ void SceneRound1::Draw(sf::RenderWindow& window)
 
 	sf::Vector2i mousePx = sf::Mouse::getPosition(window);
 	sf::Vector2f world = window.mapPixelToCoords(mousePx);
-	//std::cout << "Mouse Pixel: ("
-	//	<< mousePx.x << ", " << mousePx.y << ")  "
-	//	<< "World Pos: ("
-	//	<< worldPos.x << ", " << worldPos.y << ")"
-	//	<< std::endl;
+	/*std::cout << "Mouse Pixel: ("
+		<< mousePx.x << ", " << mousePx.y << ")  "
+		<< "World Pos: ("
+		<< world.x << ", " << world.y << ")"
+		<< std::endl;*/
 
-	if (isPlacingWall)
+
+	if (isPlacingWall1 || isPlacingWall2|| isPlacingWall3)
 	{
 		sf::Vector2f snapped = mgrid.snapPosition(world);
 		PickImageSprite.setPosition(snapped);
@@ -119,6 +127,7 @@ void SceneRound1::Draw(sf::RenderWindow& window)
 			}
 		}
 	}
+
 }
 void SceneRound1::Release()
 {
@@ -141,13 +150,17 @@ void SceneRound1::MonsterSpawn(int count)
 			monster = monsterPool.front();
 			monsterPool.pop_back();
 			monster->SetActive(true);
-			monster->Init();
+			
 		}
+	
+		monster->SetGrid(&mgrid);
+		monster->SetTowers(towerList);
 		sf::Vector2f spawnPos;
+
 		spawnPos.x = Utils::RandomRange(-20, -10);
 		spawnPos.y = Utils::RandomRange(400, 630);
 		monster->SetPosition(spawnPos);
-		monster->Reset();
+
 
 		float xx = 710.f;
 		float yy = Utils::RandomRange(400, 630);
@@ -172,9 +185,25 @@ void SceneRound1::OnEvent(const sf::Event& ev)
 		if (world.x > 740.f && world.x < 800.f &&
 			world.y > 75.f && world.y < 155.f)
 		{
+			std::cout << "Click to wall" << std::endl;
+
+			isPlacingWall1 = true;
+		}
+
+		if (world.x > 826.f && world.x < 885.f &&
+			world.y > 75.f && world.y < 155.f)
+		{
 			std::cout << "Click to tower 1" << std::endl;
 
-			isPlacingWall = true;
+			isPlacingWall2 = true;
+		}
+
+		if (world.x > 903.f && world.x < 967.f &&
+			world.y > 75.f && world.y < 155.f)
+		{
+			std::cout << "Click to tower 1" << std::endl;
+
+			isPlacingWall3 = true;
 		}
 	}
 	for (auto* tower : towerList)
@@ -214,36 +243,152 @@ void SceneRound1::OnEvent(const sf::Event& ev)
 	{
 		isColliding = false;
 	}
-	if (isPlacingWall && !isColliding)
+	if (!isColliding)
 	{
-		if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
+		if (isPlacingWall1)
 		{
-			if (world.x > 23.f && world.x < 670.f &&
-				world.y > 320.f && world.y < 690.f)
+			if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
 			{
-				int cx = int(std::round(world.x / mgrid.getCellSize().x));
-				int cy = int(std::round(world.y / mgrid.getCellSize().y));
-				std::array<std::pair<int, int>, 4> quads = { {
-					{cx - 1, cy - 1},
-					{cx , cy - 1},
-					{cx - 1, cy },
-					{cx , cy }
-				} };
-				std::cout<< cx<<", " << cy << std::endl;
-				for (auto [cx, cy] : quads)
+				if (world.x > 23.f && world.x < 670.f &&
+					world.y > 320.f && world.y < 690.f)
 				{
-					if (mgrid.isInBounds(cx, cy))
+
+					float cw = mgrid.getCellSize().x;
+					float ch = mgrid.getCellSize().y;
+					int ix = int(std::round(world.x / cw));
+					int iy = int(std::round(world.y / ch));
+
+
+					std::array<sf::Vector2i, 4> quads = { {
+						{ix - 1, iy - 1},
+						{ ix , iy - 1},
+						{ix - 1,  iy },
+						{ ix ,  iy }
+					} };
+
+					std::vector<sf::Vector2i> occupied;
+					for (auto cell : quads)
 					{
-						mgrid.setBlocked(cx, cy, true);
+						int cx = cell.x, cy = cell.y;
+						if (!mgrid.isInBounds(cx, cy)) continue;
+						mgrid.setBlocked(ix, iy, true);
+						occupied.push_back(cell);
 					}
+					auto* Tower = new TowerBase("Base");
+					Tower->Init();
+					Tower->SetOccupiedCells(occupied);
+					Tower->SetPosition(snapped);
+					Tower->Reset();
+					AddGameObject(Tower);
+					towerList.push_back(Tower);
+
+
+
+					auto* wall = new TowerWall("Base1");
+					wall->Init();
+					wall->SetPosition(snapped);
+					wall->Reset();
+					AddGameObject(wall);
+					isPlacingWall1 = false;
 				}
-				auto* Tower = new TowerBase("Base");
-				Tower->Init();
-				Tower->SetPosition(snapped);
-				Tower->Reset();
-				AddGameObject(Tower);
-				towerList.push_back(Tower);
-				isPlacingWall = false;
+			}
+		}
+		if (isPlacingWall2)
+		{
+			if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
+			{
+				if (world.x > 23.f && world.x < 670.f &&
+					world.y > 320.f && world.y < 690.f)
+				{
+
+					float cw = mgrid.getCellSize().x;
+					float ch = mgrid.getCellSize().y;
+					int ix = int(std::round(world.x / cw));
+					int iy = int(std::round(world.y / ch));
+
+
+					std::array<sf::Vector2i, 4> quads = { {
+						{ix - 1, iy - 1},
+						{ ix , iy - 1},
+						{ix - 1,  iy },
+						{ ix ,  iy }
+					} };
+
+					std::vector<sf::Vector2i> occupied;
+					for (auto cell : quads)
+					{
+						int cx = cell.x, cy = cell.y;
+						if (!mgrid.isInBounds(cx, cy)) continue;
+						mgrid.setBlocked(ix, iy, true);
+						occupied.push_back(cell);
+					}
+					auto* Tower = new TowerBase("Base");
+					Tower->Init();
+					Tower->SetOccupiedCells(occupied);
+					Tower->SetPosition(snapped);
+					Tower->Reset();
+					AddGameObject(Tower);
+					towerList.push_back(Tower);
+
+					auto* tower1 = new Tower1("Base1");
+					tower1->Init();
+					tower1->SetOccupiedCells(occupied);
+					tower1->SetPosition(snapped);
+					tower1->Reset();
+					tower1->SetMonsters(monsterList);
+					AddGameObject(tower1);
+
+					isPlacingWall2 = false;
+				}
+			}
+		}
+		if (isPlacingWall3)
+		{
+			if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
+			{
+				if (world.x > 23.f && world.x < 670.f &&
+					world.y > 320.f && world.y < 690.f)
+				{
+
+					float cw = mgrid.getCellSize().x;
+					float ch = mgrid.getCellSize().y;
+					int ix = int(std::round(world.x / cw));
+					int iy = int(std::round(world.y / ch));
+
+
+					std::array<sf::Vector2i, 4> quads = { {
+						{ix - 1, iy - 1},
+						{ ix , iy - 1},
+						{ix - 1,  iy },
+						{ ix ,  iy }
+					} };
+
+					std::vector<sf::Vector2i> occupied;
+					for (auto cell : quads)
+					{
+						int cx = cell.x, cy = cell.y;
+						if (!mgrid.isInBounds(cx, cy)) continue;
+						mgrid.setBlocked(ix, iy, true);
+						occupied.push_back(cell);
+					}
+					auto* Tower = new TowerBase("Base");
+					Tower->Init();
+					Tower->SetOccupiedCells(occupied);
+					Tower->SetPosition(snapped);
+					Tower->Reset();
+					AddGameObject(Tower);
+					towerList.push_back(Tower);
+
+					auto* tower2 = new Tower2("Base1");
+					tower2->Init();
+					tower2->SetOccupiedCells(occupied);
+					tower2->SetPosition(snapped);
+					tower2->Reset();
+					tower2->SetMonsters(monsterList);
+					AddGameObject(tower2);
+
+					isPlacingWall3 = false;
+				}
 			}
 		}
 	}

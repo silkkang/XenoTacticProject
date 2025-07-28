@@ -8,6 +8,10 @@
 class TileMap;
 class Monster;
 class TowerBase;
+class Tower1;
+class Tower2;
+class TowerWall;
+
 class SceneRound1 : public Scene
 {
 protected:
@@ -25,7 +29,10 @@ protected:
 
 	float monsterTimer = 0;
 	sf::RenderWindow& m_window;
-	bool isPlacingWall = false;
+	bool isPlacingWall1 = false;
+	bool isPlacingWall2 = false;
+	bool isPlacingWall3 = false;
+
 	sf::Sprite wallSprite;
 	bool isColliding = false;
 	bool towerColliding = false;
