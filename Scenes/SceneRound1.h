@@ -4,6 +4,7 @@
 #include "ResourceMgr.h" 
 #include "Grid.h"
 #include <SFML/Graphics.hpp>
+#include "RoundMgr.h"
 
 class TileMap;
 class Monster;
@@ -18,8 +19,8 @@ protected:
 	TileMap* tileMap = nullptr;
 	Grid mgrid;
 	std::vector<TowerBase*> towerList;
-
-
+	RoundMgr mRoundMgr{};
+	
 	sf::Sprite uiSprite;
 	sf::Sprite BackgroundSprite;
 	sf::Sprite PickImageSprite;

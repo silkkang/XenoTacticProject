@@ -15,8 +15,13 @@
 #include "TowerWall.h"
 #include "Grid.h"
 #include <array>
+#include "RoundMgr.h"
+#include "TextGo.h"
+
 SceneRound1::SceneRound1(sf::RenderWindow& window)
-	: Scene(SceneIds::Round1), m_window(window), mgrid({ 24.f,32.f }, { 30,15 })
+	: Scene(SceneIds::Round1),
+	m_window(window),
+	mgrid({ 24.f,32.f }, { 30,15 })
 {
 }
 
@@ -40,9 +45,8 @@ void SceneRound1::Init()
 	TEXTURE_MGR.Load(texList);
 	TEXTURE_MGR.Load("graphics/monster.png");
 	ANI_CLIP_MGR.Load("animations/monsterCol1.csv");
+	FONT_MGR.Load("fonts/xenotacticfont.ttf");
 
-
-	Scene::Init();
 
 	sf::Texture& uiTex = TEXTURE_MGR.Get("map/gameui.png");
 	uiSprite.setTexture(uiTex);
@@ -65,7 +69,34 @@ void SceneRound1::Init()
 	PickImagexSprite.setColor(sf::Color(255, 255, 255, 128));
 
 
+	std::vector<RoundConfig> configs =
+	{
+		{ 1,  1, 1.f },
+		{ 2,  1, 1.f },
+		{ 3,  1, 1.f },
+		{4,  1, 1.f }
 
+	};
+
+	mRoundMgr = RoundMgr(
+		configs,
+		[this](int r) {
+			std::cout << "라운드 " << r << " 시작!\n";
+			auto* go = new TextGo("fonts/xenotacticfont.ttf");
+			go->SetString(std::to_string(r));
+			go->SetCharacterSize(30);
+			go->SetFillColor(sf::Color::Blue);
+			go->SetPosition({664, 850.f });
+			go->SetOrigin(Origins::MC);
+
+			go->sortingLayer = SortingLayers::UI;
+			go->sortingOrder = 100;
+
+			AddGameObject(go);; },
+		[this]() { ; },
+		[this](int cnt) { MonsterSpawn(cnt); }
+	);
+	Scene::Init();
 }
 
 void SceneRound1::Enter()
@@ -77,14 +108,35 @@ void SceneRound1::Enter()
 void SceneRound1::Update(float dt)
 {
 	Scene::Update(dt);
-	monsterTimer += dt;
-	if (monsterTimer > 1.0f)
-	{
-		//std::cout << "Monster Spawn" << std::endl;
-		MonsterSpawn(1);
-		monsterTimer = 0.0f;
-	}
+	using RS = RoundState;
 
+	mRoundMgr.Update(dt);
+
+	if (mRoundMgr.GetState() == RS::Waiting)
+	{
+		bool anyAlive = false;
+		for (auto* mo : monsterList)
+		{
+			if (mo->GetActive())
+			{
+				anyAlive = true;
+				break;
+			}
+		}
+		if (!anyAlive)
+		{
+			// (a) UI·보상 등
+			std::cout << "*** 라운드 "
+				<< mRoundMgr.GetCurrentRound()
+				<< " 클리어! ***\n";
+
+			// (b) 클리어 콜백(필요하면)
+			// if (onRoundClear) onRoundClear();
+
+			// (c) 다음 라운드로 이동
+			mRoundMgr.StartNextRound();
+		}
+	}
 
 	//if (tileMap)
 	//	tileMap->Update(dt);
@@ -95,17 +147,13 @@ void SceneRound1::Update(float dt)
 
 void SceneRound1::Draw(sf::RenderWindow& window)
 {
-
-
-
 	window.draw(BackgroundSprite);
 	float offsetY = 289.f;
 	sf::Transform t;
 	t.translate(1.f, offsetY);
-	mgrid.draw(window, t);;
+	mgrid.draw(window, t);
 	Scene::Draw(window);
 	window.draw(uiSprite);
-
 
 	sf::Vector2i mousePx = sf::Mouse::getPosition(window);
 	sf::Vector2f world = window.mapPixelToCoords(mousePx);
@@ -310,13 +358,18 @@ void SceneRound1::OnEvent(const sf::Event& ev)
 			if (world.x > 23.f && world.x < 670.f &&
 				world.y > 320.f && world.y < 690.f)
 			{
-				auto* Tower = new TowerBase("Base");
-				Tower->Init();
-				Tower->SetOccupiedCells(occupied);
-				Tower->SetPosition(snapped);
-				Tower->Reset();
-				AddGameObject(Tower);
-				towerList.push_back(Tower);
+				if (isPlacingWall1 || isPlacingWall2 || isPlacingWall3 || isPlacingWall4
+					|| isPlacingWall5 || isPlacingWall6 || isPlacingWall7)
+				{
+					auto* Tower = new TowerBase("Base");
+					Tower->Init();
+					Tower->SetOccupiedCells(occupied);
+					Tower->SetPosition(snapped);
+					Tower->Reset();
+					AddGameObject(Tower);
+					towerList.push_back(Tower);
+				}
+
 
 				if (isPlacingWall1)
 				{

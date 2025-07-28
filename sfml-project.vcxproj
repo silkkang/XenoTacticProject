@@ -153,7 +153,9 @@
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="pugixml.cpp" />
+    <ClCompile Include="RoundMgr.cpp" />
     <ClCompile Include="Scenes\SceneRound1.cpp" />
     <ClCompile Include="Scenes\SceneDev1.cpp" />
     <ClCompile Include="Scenes\SceneDev2.cpp" />
@@ -191,6 +193,8 @@
     <ClInclude Include="Framework\Scene.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="RoundMgr.h" />
     <ClInclude Include="Scenes\SceneRound1.h" />
     <ClInclude Include="Scenes\SceneDev1.h" />
     <ClInclude Include="Scenes\SceneDev2.h" />

@@ -84,7 +84,7 @@ void Monster::Update(float dt)
 		if (nextPos.x < -50 || nextPos.x > 1280 || nextPos.y < 326 )
 		{
 			
-			std::cout << "¸Ê À§¿¡ ´ê¾Æ.\n";
+		//	std::cout << "¸Ê À§¿¡ ´ê¾Æ.\n";
 			StartDodge(-20.f);
 			return;
 		}
@@ -92,7 +92,7 @@ void Monster::Update(float dt)
 		if (nextPos.x < -50 || nextPos.x > 1280 || nextPos.y > 700)
 		{
 		
-			std::cout << "¸Ê ¹ÛÀ¸·Î ³ª°¡ ¸ØÃä´Ï´Ù.\n";
+			//std::cout << "¸Ê ¹ÛÀ¸·Î ³ª°¡ ¸ØÃä´Ï´Ù.\n";
 
 			return;
 		}
@@ -129,7 +129,7 @@ void Monster::Update(float dt)
 				{
 					if (GetGlobalBounds().intersects(tower->GetGlobalBounds()))
 					{
-						std::cout << "¸ó½ºÅÍ°¡ Å¸¿ö¿Í Ãæµ¹ÇØ ¸Ê±âÁØ À§·Î°©´Ï´Ù.\n";
+						//std::cout << "¸ó½ºÅÍ°¡ Å¸¿ö¿Í Ãæµ¹ÇØ ¸Ê±âÁØ À§·Î°©´Ï´Ù.\n";
 						StartDodge(20.f);
 						return;          
 					}
@@ -182,7 +182,6 @@ void Monster::Draw(sf::RenderWindow& window)
 void Monster::SetHit(int d)
 {
 	hp -= d;
-	std::cout << hp << d << std::endl;
 		if (hp <= 0)
 	{
 		SetActive(false);
