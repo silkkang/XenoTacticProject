@@ -17,12 +17,14 @@ void RoundMgr::StartNextRound()
 	if (currentRound >= (int)rounds.size())
 	{
 		state = RoundState::Finish;
-		currentRound = 0;
+		return;
 	}
 	state = RoundState::Prepare;
 	waveSpawned = 0;
 	thisWaveMonsterSpawned = 0;
 	spawnedTime = 0.f;
+
+	if (onNewRound)
 	onNewRound(currentRound + 1);
 	state = RoundState::Running;
 }
@@ -61,7 +63,7 @@ void RoundMgr::Update(float dt)
 		}
 		else
 		{
-			StartNextRound();
+			
 			state = RoundState::Waiting;
 
 		}

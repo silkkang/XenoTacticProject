@@ -71,10 +71,11 @@ void SceneRound1::Init()
 
 	std::vector<RoundConfig> configs =
 	{
-		{ 1,  1, 1.f },
-		{ 2,  1, 1.f },
-		{ 3,  1, 1.f },
-		{4,  1, 1.f }
+		{ 1,  2, 1.f },
+		{ 1,  2, 1.f },
+		{ 1,  2, 1.f },
+		{ 1,  2, 1.f },
+
 
 	};
 
@@ -82,17 +83,8 @@ void SceneRound1::Init()
 		configs,
 		[this](int r) {
 			std::cout << "라운드 " << r << " 시작!\n";
-			auto* go = new TextGo("fonts/xenotacticfont.ttf");
-			go->SetString(std::to_string(r));
-			go->SetCharacterSize(30);
-			go->SetFillColor(sf::Color::Blue);
-			go->SetPosition({664, 850.f });
-			go->SetOrigin(Origins::MC);
-
-			go->sortingLayer = SortingLayers::UI;
-			go->sortingOrder = 100;
-
-			AddGameObject(go);; },
+			round = r;
+			; },
 		[this]() { ; },
 		[this](int cnt) { MonsterSpawn(cnt); }
 	);
@@ -140,7 +132,17 @@ void SceneRound1::Update(float dt)
 
 	//if (tileMap)
 	//	tileMap->Update(dt);
+	auto* go = new TextGo("fonts/xenotacticfont.ttf");
+	go->SetString(std::to_string(round));
+	go->SetCharacterSize(30);
+	go->SetFillColor(sf::Color::Blue);
+	go->SetPosition({ 664, 850.f });
+	go->SetOrigin(Origins::MC);
 
+	go->sortingLayer = SortingLayers::UI;
+	go->sortingOrder = 100;
+
+	AddGameObject(go);
 
 
 }
