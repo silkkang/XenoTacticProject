@@ -32,6 +32,10 @@ protected:
 	bool isPlacingWall1 = false;
 	bool isPlacingWall2 = false;
 	bool isPlacingWall3 = false;
+	bool isPlacingWall4 = false;
+	bool isPlacingWall5 = false;
+	bool isPlacingWall6 = false;
+	bool isPlacingWall7 = false;
 
 	sf::Sprite wallSprite;
 	bool isColliding = false;
